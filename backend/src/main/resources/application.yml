@@ -46,6 +46,7 @@ app:
     metering-tick-seconds: 10
     cutoff-warning-seconds: 60
     default-free-minutes: ${DEFAULT_FREE_MINUTES:30}
+    scheduled-metering-enabled: true
   storage:
     petition-dir: ${PETITION_STORAGE_DIR:./data/petitions}
   billing:

@@ -30,5 +30,8 @@ public abstract class IntegrationTestBase {
         registry.add("app.encryption.key", () -> "MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDE=");
         registry.add("app.llm.api-key", () -> "test-key");
         registry.add("app.llm.model", () -> "claude-opus-4-8");
+        // Tests drive TimeMeteringService.tickSession() directly for determinism —
+        // the background @Scheduled tick must not run concurrently with test assertions.
+        registry.add("app.chat.scheduled-metering-enabled", () -> "false");
     }
 }
