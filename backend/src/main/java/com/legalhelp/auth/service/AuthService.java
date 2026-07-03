@@ -3,6 +3,7 @@ package com.legalhelp.auth.service;
 import com.legalhelp.auth.dto.*;
 import com.legalhelp.auth.entity.RefreshToken;
 import com.legalhelp.auth.entity.User;
+import com.legalhelp.auth.entity.UserStatus;
 import com.legalhelp.auth.repository.RefreshTokenRepository;
 import com.legalhelp.auth.repository.UserRepository;
 import com.legalhelp.common.exception.BadRequestException;
@@ -66,6 +67,9 @@ public class AuthService {
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
         if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
             throw new BadCredentialsException("Invalid email or password");
+        }
+        if (user.getStatus() == UserStatus.SUSPENDED) {
+            throw new BadCredentialsException("This account has been suspended");
         }
         return issueTokens(user);
     }
