@@ -45,8 +45,11 @@ app:
   chat:
     metering-tick-seconds: 10
     cutoff-warning-seconds: 60
+    default-free-minutes: ${DEFAULT_FREE_MINUTES:30}
   storage:
     petition-dir: ${PETITION_STORAGE_DIR:./data/petitions}
+  billing:
+    default-payout-threshold-minor-units: ${DEFAULT_PAYOUT_THRESHOLD_MINOR_UNITS:100000}
   payment:
     razorpay:
       key-id: ${RAZORPAY_KEY_ID:}
