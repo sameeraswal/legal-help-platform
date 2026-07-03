@@ -4,6 +4,7 @@ import com.legalhelp.auth.service.UserDirectoryService;
 import com.legalhelp.chat.dto.ChatEvent;
 import com.legalhelp.chat.dto.OnlineLawyerResponse;
 import com.legalhelp.chat.dto.OutgoingEventType;
+import com.legalhelp.common.exception.BadRequestException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,9 @@ public class PresenceService {
     }
 
     public void setOnline(Long lawyerId) {
+        if (!userDirectoryService.isApprovedLawyer(lawyerId)) {
+            throw new BadRequestException("Only approved lawyers can go online");
+        }
         if (onlineLawyerIds.add(lawyerId)) {
             broadcast();
         }

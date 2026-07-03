@@ -65,6 +65,6 @@ public class CaseCategoryService {
 
     private CaseCategoryResponse toResponse(CaseCategory category) {
         return new CaseCategoryResponse(category.getId(), category.getSlug(), category.getName(),
-                category.getDescription(), category.isActive());
+                category.getDescription(), category.getTemplateKey(), category.isActive());
     }
 }

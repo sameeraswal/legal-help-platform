@@ -5,6 +5,7 @@ import com.legalhelp.chat.entity.ChatSession;
 import com.legalhelp.chat.entity.ChatSessionStatus;
 import com.legalhelp.chat.entity.CounterpartType;
 import com.legalhelp.chat.entity.MessageSender;
+import com.legalhelp.auth.service.UserDirectoryService;
 import com.legalhelp.chat.repository.ChatSessionRepository;
 import com.legalhelp.common.exception.BadRequestException;
 import com.legalhelp.common.exception.ResourceNotFoundException;
@@ -20,10 +21,13 @@ public class ChatSessionService {
 
     private final ChatSessionRepository sessionRepository;
     private final ChatMessageService chatMessageService;
+    private final UserDirectoryService userDirectoryService;
 
-    public ChatSessionService(ChatSessionRepository sessionRepository, ChatMessageService chatMessageService) {
+    public ChatSessionService(ChatSessionRepository sessionRepository, ChatMessageService chatMessageService,
+                               UserDirectoryService userDirectoryService) {
         this.sessionRepository = sessionRepository;
         this.chatMessageService = chatMessageService;
+        this.userDirectoryService = userDirectoryService;
     }
 
     @Transactional
@@ -36,6 +40,9 @@ public class ChatSessionService {
     @Transactional
     public ChatSessionResponse startLawyerSession(Long customerId, Long lawyerId) {
         requireNoActiveSession(customerId);
+        if (!userDirectoryService.isApprovedLawyer(lawyerId)) {
+            throw new BadRequestException("This lawyer is not available for chat");
+        }
         ChatSession session = sessionRepository.save(new ChatSession(customerId, CounterpartType.LAWYER, lawyerId));
         chatMessageService.append(session.getId(), MessageSender.SYSTEM, "Session started.");
         return toResponse(session);

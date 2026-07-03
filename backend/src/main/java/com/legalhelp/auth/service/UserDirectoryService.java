@@ -38,6 +38,13 @@ public class UserDirectoryService {
     }
 
     @Transactional(readOnly = true)
+    public boolean isApprovedLawyer(Long userId) {
+        return userRepository.findById(userId)
+                .map(u -> u.getRole() == Role.LAWYER && Boolean.TRUE.equals(u.getLawyerApproved()))
+                .orElse(false);
+    }
+
+    @Transactional(readOnly = true)
     public List<UserProfileResponse> listApprovedLawyers() {
         return userRepository.findByRole(Role.LAWYER, org.springframework.data.domain.Pageable.unpaged())
                 .stream()
