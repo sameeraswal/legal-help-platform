@@ -16,6 +16,12 @@ public interface ChatSessionRepository extends JpaRepository<ChatSession, Long> 
 
     Optional<ChatSession> findByCustomerIdAndStatus(Long customerId, ChatSessionStatus status);
 
+    List<ChatSession> findByCustomerIdOrderByStartedAtDesc(Long customerId);
+
+    List<ChatSession> findByLawyerIdOrderByStartedAtDesc(Long lawyerId);
+
+    Optional<ChatSession> findByLawyerIdAndStatus(Long lawyerId, ChatSessionStatus status);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select s from ChatSession s where s.id = :id")
     Optional<ChatSession> findByIdForUpdate(Long id);

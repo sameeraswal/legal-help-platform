@@ -73,6 +73,16 @@ public class ChatSessionService {
         return sessionRepository.findByStatus(ChatSessionStatus.ACTIVE);
     }
 
+    @Transactional(readOnly = true)
+    public List<ChatSessionResponse> myCustomerSessions(Long customerId) {
+        return sessionRepository.findByCustomerIdOrderByStartedAtDesc(customerId).stream().map(this::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ChatSessionResponse> myLawyerSessions(Long lawyerId) {
+        return sessionRepository.findByLawyerIdOrderByStartedAtDesc(lawyerId).stream().map(this::toResponse).toList();
+    }
+
     private void requireNoActiveSession(Long customerId) {
         if (sessionRepository.findByCustomerIdAndStatus(customerId, ChatSessionStatus.ACTIVE).isPresent()) {
             throw new BadRequestException("You already have an active chat session");

@@ -27,6 +27,11 @@ public class ChatSessionController {
         this.chatMessageService = chatMessageService;
     }
 
+    @GetMapping
+    public List<ChatSessionResponse> mine(@AuthenticationPrincipal AuthPrincipal principal) {
+        return chatSessionService.myCustomerSessions(principal.userId());
+    }
+
     @GetMapping("/active")
     public Optional<ChatSessionResponse> active(@AuthenticationPrincipal AuthPrincipal principal) {
         return chatSessionService.activeSessionFor(principal.userId());

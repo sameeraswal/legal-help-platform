@@ -1,6 +1,8 @@
 package com.legalhelp.chat.controller;
 
 import com.legalhelp.chat.dto.ChatMessageResponse;
+import com.legalhelp.chat.dto.ChatSessionResponse;
+import com.legalhelp.chat.entity.ChatSessionStatus;
 import com.legalhelp.chat.service.ChatMessageService;
 import com.legalhelp.chat.service.ChatSessionService;
 import com.legalhelp.chat.service.PresenceService;
@@ -10,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/lawyer/chat")
@@ -25,6 +28,18 @@ public class LawyerChatController {
         this.presenceService = presenceService;
         this.chatSessionService = chatSessionService;
         this.chatMessageService = chatMessageService;
+    }
+
+    @GetMapping("/sessions")
+    public List<ChatSessionResponse> mine(@AuthenticationPrincipal AuthPrincipal principal) {
+        return chatSessionService.myLawyerSessions(principal.userId());
+    }
+
+    @GetMapping("/sessions/active")
+    public Optional<ChatSessionResponse> active(@AuthenticationPrincipal AuthPrincipal principal) {
+        return chatSessionService.myLawyerSessions(principal.userId()).stream()
+                .filter(s -> s.status() == ChatSessionStatus.ACTIVE)
+                .findFirst();
     }
 
     @PostMapping("/presence/online")
