@@ -6,20 +6,26 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-/** Shared MySQL Testcontainers base for integration tests. */
+/**
+ * Shared MySQL Testcontainers base for integration tests. Uses the Testcontainers
+ * "singleton container" pattern (started once, never stopped) rather than a fresh
+ * container per test class: started explicitly in a static initializer instead of via
+ * {@code @Testcontainers}/{@code @Container}, so no per-class teardown/recreate cycle
+ * happens. This avoids repeated container churn across the whole suite.
+ */
 @ExtendWith(SpringExtension.class)
-@Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class IntegrationTestBase {
 
-    @Container
     static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.4")
             .withDatabaseName("legalhelp_test")
             .withUsername("legalhelp")
             .withPassword("legalhelp");
+
+    static {
+        MYSQL.start();
+    }
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {

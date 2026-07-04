@@ -36,11 +36,20 @@ public class WalletService {
 
     @Transactional
     public CustomerWallet getOrCreateWallet(Long customerId) {
-        return walletRepository.findByIdForUpdate(customerId)
-                .orElseGet(() -> walletRepository.save(new CustomerWallet(customerId, appConfigService.getFreeSeconds())));
+        return walletRepository.findByIdForUpdate(customerId).orElseGet(() -> createWallet(customerId));
     }
 
-    @Transactional(readOnly = true)
+    /** The initial free-minutes grant must appear in the ledger too — it is the source of truth. */
+    private CustomerWallet createWallet(Long customerId) {
+        long freeSeconds = appConfigService.getFreeSeconds();
+        CustomerWallet wallet = walletRepository.save(new CustomerWallet(customerId, freeSeconds));
+        ledgerRepository.save(WalletLedger.customerEntry(customerId, LedgerEntryType.RECHARGE, freeSeconds,
+                wallet.totalAvailableSeconds(), "signup-free-minutes-grant"));
+        return wallet;
+    }
+
+    /** Not readOnly: findByIdForUpdate takes a row lock, which MySQL rejects in a read-only transaction. */
+    @Transactional
     public long availableSeconds(Long customerId) {
         return walletRepository.findByIdForUpdate(customerId)
                 .map(CustomerWallet::totalAvailableSeconds)

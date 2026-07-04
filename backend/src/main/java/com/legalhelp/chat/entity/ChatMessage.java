@@ -20,8 +20,7 @@ public class ChatMessage {
     @Column(nullable = false, length = 16)
     private MessageSender sender;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String content;
 
     @Column(nullable = false, updatable = false)

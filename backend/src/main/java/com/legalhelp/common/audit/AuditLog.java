@@ -28,12 +28,10 @@ public class AuditLog {
     @Column(name = "entity_id", length = 64)
     private String entityId;
 
-    @Lob
-    @Column(name = "before_state")
+    @Column(name = "before_state", columnDefinition = "LONGTEXT")
     private String beforeState;
 
-    @Lob
-    @Column(name = "after_state")
+    @Column(name = "after_state", columnDefinition = "LONGTEXT")
     private String afterState;
 
     @Column(nullable = false, updatable = false)

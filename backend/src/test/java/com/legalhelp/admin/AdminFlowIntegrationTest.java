@@ -30,8 +30,8 @@ class AdminFlowIntegrationTest extends IntegrationTestBase {
     private PasswordEncoder passwordEncoder;
 
     private HttpHeaders adminHeaders() {
-        User admin = new User(Role.ADMIN, "Platform Admin", "admin-flow@example.com", null, passwordEncoder.encode("AdminPass123!"));
-        userRepository.save(admin);
+        userRepository.findByEmail("admin-flow@example.com").orElseGet(() -> userRepository.save(
+                new User(Role.ADMIN, "Platform Admin", "admin-flow@example.com", null, passwordEncoder.encode("AdminPass123!"))));
         ResponseEntity<AuthResponse> login = restTemplate.postForEntity("/api/auth/login",
                 new LoginRequest("admin-flow@example.com", "AdminPass123!"), AuthResponse.class);
         HttpHeaders headers = new HttpHeaders();

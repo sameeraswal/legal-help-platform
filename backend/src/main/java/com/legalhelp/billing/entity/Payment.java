@@ -40,8 +40,7 @@ public class Payment {
     @Column(nullable = false, length = 16)
     private PaymentStatus status = PaymentStatus.PENDING;
 
-    @Lob
-    @Column(name = "raw_webhook_payload")
+    @Column(name = "raw_webhook_payload", columnDefinition = "LONGTEXT")
     private String rawWebhookPayload;
 
     @Column(name = "created_at", nullable = false, updatable = false)

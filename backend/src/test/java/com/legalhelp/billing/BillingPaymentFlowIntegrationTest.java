@@ -45,7 +45,8 @@ class BillingPaymentFlowIntegrationTest extends IntegrationTestBase {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(registerResponse.getBody().accessToken());
 
-        ResponseEntity<PlanResponse[]> plans = restTemplate.getForEntity("/api/plans", PlanResponse[].class);
+        ResponseEntity<PlanResponse[]> plans = restTemplate.exchange(
+                "/api/plans", HttpMethod.GET, new HttpEntity<>(headers), PlanResponse[].class);
         PlanResponse plan = plans.getBody()[0];
 
         ResponseEntity<PurchaseInitiateResponse> purchase = restTemplate.exchange(
@@ -118,7 +119,8 @@ class BillingPaymentFlowIntegrationTest extends IntegrationTestBase {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(registerResponse.getBody().accessToken());
 
-        ResponseEntity<PlanResponse[]> plans = restTemplate.getForEntity("/api/plans", PlanResponse[].class);
+        ResponseEntity<PlanResponse[]> plans = restTemplate.exchange(
+                "/api/plans", HttpMethod.GET, new HttpEntity<>(headers), PlanResponse[].class);
         PlanResponse plan = plans.getBody()[0];
 
         restTemplate.exchange("/api/purchases/plans/" + plan.id(), HttpMethod.POST, new HttpEntity<>(headers), PurchaseInitiateResponse.class);

@@ -15,6 +15,7 @@ import org.springframework.http.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,7 +37,8 @@ class PetitionFlowIntegrationTest extends IntegrationTestBase {
         when(llmClient.generate(anyString(), any(), anyString()))
                 .thenReturn("This is a drafted petition body.\n\nSecond paragraph with more detail.");
 
-        RegisterRequest register = new RegisterRequest(Role.CUSTOMER, "Test Customer", "petition-flow@example.com", null, "Password123!");
+        RegisterRequest register = new RegisterRequest(Role.CUSTOMER, "Test Customer",
+                "petition-flow-" + UUID.randomUUID() + "@example.com", null, "Password123!");
         ResponseEntity<AuthResponse> response = restTemplate.postForEntity("/api/auth/register", register, AuthResponse.class);
         authHeaders = new HttpHeaders();
         authHeaders.setBearerAuth(response.getBody().accessToken());
@@ -44,7 +46,8 @@ class PetitionFlowIntegrationTest extends IntegrationTestBase {
 
     @Test
     void fullPetitionFlow_intakeToDownload() {
-        ResponseEntity<CaseCategoryResponse[]> categories = restTemplate.getForEntity("/api/categories", CaseCategoryResponse[].class);
+        ResponseEntity<CaseCategoryResponse[]> categories = restTemplate.exchange(
+                "/api/categories", HttpMethod.GET, new HttpEntity<>(authHeaders), CaseCategoryResponse[].class);
         assertThat(categories.getBody()).isNotEmpty();
         Long categoryId = categories.getBody()[0].id();
 

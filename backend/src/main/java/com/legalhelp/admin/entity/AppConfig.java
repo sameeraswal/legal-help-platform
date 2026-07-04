@@ -24,13 +24,13 @@ public class AppConfig {
     @Column(name = "payout_threshold_minor_units", nullable = false)
     private long payoutThresholdMinorUnits;
 
-    @Column(name = "pg_key_id_encrypted")
+    @Column(name = "pg_key_id_encrypted", columnDefinition = "TEXT")
     private String pgKeyIdEncrypted;
 
-    @Column(name = "pg_key_secret_encrypted")
+    @Column(name = "pg_key_secret_encrypted", columnDefinition = "TEXT")
     private String pgKeySecretEncrypted;
 
-    @Column(name = "pg_webhook_secret_encrypted")
+    @Column(name = "pg_webhook_secret_encrypted", columnDefinition = "TEXT")
     private String pgWebhookSecretEncrypted;
 
     protected AppConfig() {

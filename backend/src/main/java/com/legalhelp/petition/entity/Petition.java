@@ -19,8 +19,7 @@ public class Petition {
     @Column(name = "case_id", nullable = false)
     private Long caseId;
 
-    @Lob
-    @Column(name = "generated_content", nullable = false)
+    @Column(name = "generated_content", nullable = false, columnDefinition = "LONGTEXT")
     private String generatedContent;
 
     @Column(name = "pdf_url", nullable = false, length = 512)

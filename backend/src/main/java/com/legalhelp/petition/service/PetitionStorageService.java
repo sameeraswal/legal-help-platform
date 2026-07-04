@@ -18,7 +18,7 @@ public class PetitionStorageService {
     private final Path baseDir;
 
     public PetitionStorageService(@Value("${app.storage.petition-dir}") String petitionDir) {
-        this.baseDir = Path.of(petitionDir);
+        this.baseDir = Path.of(petitionDir).normalize();
         try {
             Files.createDirectories(baseDir);
         } catch (IOException e) {
@@ -32,6 +32,7 @@ public class PetitionStorageService {
             throw new IllegalArgumentException("Invalid file name");
         }
         try {
+            Files.createDirectories(target.getParent());
             Files.write(target, content);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to write petition file: " + target, e);

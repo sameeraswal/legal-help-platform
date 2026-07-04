@@ -96,6 +96,6 @@ class ChatMeteringIntegrationTest extends IntegrationTestBase {
 
         ChatSession afterTick = chatSessionRepository.findById(session.id()).orElseThrow();
         assertThat(afterTick.getStatus()).isEqualTo(ChatSessionStatus.ACTIVE);
-        assertThat(walletService.availableSeconds(customerId)).isEqualTo(110);
+        assertThat(walletService.availableSeconds(customerId)).isEqualTo(115);
     }
 }
