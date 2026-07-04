@@ -28,7 +28,7 @@ services:
   backend:
     image: maven:3.9.9-eclipse-temurin-21
     working_dir: /workspace
-    command: ["./mvnw", "-o=false", "spring-boot:run"]
+    command: ["./mvnw", "spring-boot:run"]
     environment:
       SPRING_PROFILES_ACTIVE: dev
       DB_HOST: mysql
