@@ -6,6 +6,7 @@ import {
   goOnline,
   listMyLawyerSessions,
 } from "../../api/chat";
+import { ApiError } from "../../api/client";
 import type { ChatMessage, ChatSession } from "../../api/types/chat";
 import { ChatWindow } from "../../components/ChatWindow";
 import { Button } from "../../components/Button";
@@ -18,6 +19,7 @@ export function LawyerDashboardPage() {
   const [session, setSession] = useState<ChatSession | null | undefined>(undefined);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [history, setHistory] = useState<ChatSession[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     getLawyerActiveSession().then(async (active) => {
@@ -30,12 +32,17 @@ export function LawyerDashboardPage() {
   }, []);
 
   async function toggleOnline() {
-    if (online) {
-      await goOffline();
-    } else {
-      await goOnline();
+    setError(null);
+    try {
+      if (online) {
+        await goOffline();
+      } else {
+        await goOnline();
+      }
+      setOnline(!online);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Failed to update online status");
     }
-    setOnline(!online);
   }
 
   return (
@@ -46,6 +53,8 @@ export function LawyerDashboardPage() {
           {online ? "Go offline" : "Go online"}
         </Button>
       </div>
+
+      {error && <p className="mb-6 text-sm text-red-600">{error}</p>}
 
       {session === undefined && <Spinner />}
 

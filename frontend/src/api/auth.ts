@@ -14,3 +14,10 @@ export function login(request: LoginRequest): Promise<AuthResponse> {
     body: JSON.stringify(request),
   });
 }
+
+export function refresh(refreshToken: string): Promise<AuthResponse> {
+  return apiFetch<AuthResponse>("/api/auth/refresh", {
+    method: "POST",
+    body: JSON.stringify({ refreshToken }),
+  });
+}

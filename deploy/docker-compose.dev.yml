@@ -8,7 +8,7 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD:-legalhelp}
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-legalhelp_root}
     ports:
-      - "3306:3306"
+      - "3308:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -38,19 +38,23 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:-legalhelp}
       JWT_SECRET: ${JWT_SECRET:?set a 32+ char secret in .env}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY:?set a base64 32-byte key in .env}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-opus-4-8}
+      LLM_PROVIDER: ${LLM_PROVIDER:-openai}
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://api.openai.com/v1}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-gpt-4.1}
+      LLM_OPENROUTER_REFERER: ${LLM_OPENROUTER_REFERER:-}
+      LLM_OPENROUTER_TITLE: ${LLM_OPENROUTER_TITLE:-}
       RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:-}
       RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:-}
       RAZORPAY_WEBHOOK_SECRET: ${RAZORPAY_WEBHOOK_SECRET:-}
-      CORS_ALLOWED_ORIGINS: http://localhost:5173
+      CORS_ALLOWED_ORIGINS: http://localhost:5178
       PETITION_STORAGE_DIR: /workspace/data/petitions
     volumes:
       - ../backend:/workspace
       - maven_repo:/root/.m2
       - petition_storage:/workspace/data/petitions
     ports:
-      - "8080:8080"
+      - "8088:8080"
     depends_on:
       mysql:
         condition: service_healthy
@@ -60,12 +64,12 @@ services:
     working_dir: /workspace
     command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
     environment:
-      VITE_API_BASE_URL: http://localhost:8080
-      VITE_WS_BASE_URL: ws://localhost:8080
+      VITE_API_BASE_URL: http://localhost:8088
+      VITE_WS_BASE_URL: ws://localhost:8088
     volumes:
       - ../frontend:/workspace
     ports:
-      - "5173:5173"
+      - "5178:5173"
     depends_on:
       - backend
 

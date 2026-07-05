@@ -24,7 +24,7 @@ Take the MySQL data volume backup on a schedule appropriate to your host (mysqld
 ## Known manual/process steps not covered by this repo
 
 - Razorpay merchant account provisioning and going live (sandbox → live key rotation).
-- Anthropic API budget/rate-limit provisioning for production traffic.
+- LLM provider account/budget/rate-limit provisioning for production traffic (see `docs/llm-provider-switching.md`).
 - Legal review of petition templates per case category (`backend/src/main/resources/petition-templates`).
 - Penetration testing and load testing (500 concurrent chat sessions) ahead of launch.
 - UAT with pilot users.
